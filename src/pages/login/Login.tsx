@@ -4,46 +4,14 @@ import loginStyles from "./Login.Styles";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import withRouter from "../../hoc/Hoc";
 
-interface LoggedInUser {
-    user: {
-        authToken
-        :
-        string,
-        blockedByMe
-        :
-        boolean,
-        deactivatedAt
-        :
-        number,
-        hasBlockedMe
-        :
-        boolean,
-        name
-        :
-        string,
-        role
-        :
-        string,
-        status
-        :
-        string,
-        uid
-        :
-        string
-    }
-}
-
-
 interface IState {
     userName: string,
     uid: string,
     errorMsg: string
 }
-
 interface MyProps {
     navigate: (path: string) => void;
 }
-
 class Login extends React.Component<MyProps, IState> {
     state: IState = {
         userName: "",
@@ -118,6 +86,5 @@ class Login extends React.Component<MyProps, IState> {
         )
     }
 }
-
 
 export default withRouter(Login);

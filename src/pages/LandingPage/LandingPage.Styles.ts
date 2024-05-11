@@ -130,6 +130,7 @@ const landingPageStyles = {
     display: "flex",
     alignItems: "center",
     gap: "10px",
+    cursor: "pointer",
   },
 
   profileIcon: {
@@ -142,6 +143,19 @@ const landingPageStyles = {
     color: "#3f3f41",
     fontSize: "23px",
     fontWeight: "700",
+  },
+
+  msgText: {
+    color: "#fff",
+    fontSize: "15px",
+    fontWeight: "300",
+  },
+
+  chartMsgTime: {
+    color: "#fff",
+    fontSize: "10px",
+    fontWeight: "300",
+    textAlign: "right",
   },
 
   searchInputNotificationContainer: {
@@ -170,10 +184,11 @@ const landingPageStyles = {
     fontSize: "15px",
   },
 
-  notificationIcon: {
+  logoutIcon: {
     width: "26px",
     height: "26px",
     color: "#3f3f41",
+    cursor: "pointer",
   },
 
   rightBodyContainer: {
@@ -230,6 +245,17 @@ const landingPageStyles = {
     flexDirection: "column",
   },
 
+  listItemContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    py: "16px",
+    px: "6px",
+    borderBottom: "1px solid #9e896a",
+    width: "100%",
+    cursor: "pointer",
+  },
+
   rightChartParentContainer: {
     border: "1px solid #9e896a",
     borderRadius: "8px",
@@ -274,7 +300,7 @@ const landingPageStyles = {
   personContentName: {
     fontFamily: "Poppins",
     fontSize: "16px",
-    color: "#797A7B",
+    color: "#000",
     fontWeight: "500",
   },
 
@@ -314,14 +340,14 @@ const landingPageStyles = {
     background: "#02346B",
     padding: "15px",
     fontFamily: "Poppins",
-    fontSize: "14px",
+    fontSize: "12px",
     color: "#ffffff",
     fontWeight: "300",
     width: "50%",
     borderRadius: "14px",
     borderBottomRightRadius: "0px",
     lineHeight: "20px",
-    alignSelf: "flex-end",
+    // alignSelf: "flex-end",
   },
 
   sendMessage: {
@@ -459,6 +485,45 @@ const landingPageStyles = {
 
   sendIconButton: {
     color: "#02346B",
+  },
+
+  image: {
+    width: "100px",
+    height: "100px",
+  },
+
+  firstLetterContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "50%",
+    width: "40px",
+    height: "40px",
+    border: "1px solid black",
+  },
+
+  lastMessageTextStyle: {
+    color: "#bdbdbd",
+    fontSize: "12px",
+  },
+
+  time: {
+    color: "#bdbdbd",
+    fontSize: "13px",
+  },
+
+  LoginUID: {
+    fontFamily: "Poppins",
+    fontSize: "14px",
+    color: "#000000",
+    fontWeight: "300",
+  },
+
+  selectedUserUid: {
+    fontFamily: "Poppins",
+    fontSize: "14px",
+    color: "#07B0E8",
+    fontWeight: "300",
   },
 };
 

@@ -4,17 +4,14 @@ import registerStyles from "./Register.Styles";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import withRouter from "../../hoc/Hoc";
 
-
 interface IState {
     userName: string,
     uid: string,
     successOrErrMsg: string,
 }
-
 interface MyProps {
     navigate: (path: string) => void;
 }
-
 class Register extends React.Component<MyProps, IState> {
     state: IState = {
         userName: "",
@@ -81,6 +78,5 @@ class Register extends React.Component<MyProps, IState> {
         )
     }
 }
-
 
 export default withRouter(Register);
