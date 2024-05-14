@@ -471,10 +471,8 @@ class ChatApp extends Component<{}, AppState> {
         try {
             let conversationsRequest = new CometChat.ConversationsRequestBuilder()
                 .setLimit(30)
-
                 .build();
-            const conversationList =
-                (await conversationsRequest.fetchNext()) as Conversation[];
+            const conversationList = (await conversationsRequest.fetchNext()) as Conversation[];
             console.log("Conversations list received:", conversationList);
             const unreadMessageCounts: Record<string, number> = {};
             // conversationList.forEach((conversation) => {
@@ -758,16 +756,13 @@ class ChatApp extends Component<{}, AppState> {
             CometChat.GROUP_TYPE.PUBLIC,
             ""
         );
-
         let banMembers: Array<string> = [""];
-
         let members: Array<CometChat.GroupMember> = addGroupMembers.map((each) => {
             return new CometChat.GroupMember(
                 each,
                 CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT
             );
         });
-
         try {
             const createdGroup = await CometChat.createGroupWithMembers(
                 group,

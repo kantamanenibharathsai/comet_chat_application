@@ -766,3 +766,29 @@ export interface ChatMsgsDataType {
   type: string;
   updatedAt?: number;
 }
+
+
+
+export interface GroupInterface {
+  conversationId: string;
+  createdAt: number;
+  guid: string;
+  hasJoined: boolean;
+  isBanned: boolean;
+  joinedAt: number;
+  membersCount: number;
+  name: string;
+  owner: string;
+  scope: string;
+  type: string;
+}
+
+export interface Members {
+  [key: string]: string;
+}
+
+export interface CreatedGroup {
+  group : GroupInterface,
+  members: Members
+}
+

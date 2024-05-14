@@ -1,6 +1,7 @@
 import {
     Avatar,
     Box,
+    Button,
     Checkbox,
     FormControlLabel,
     FormGroup,
@@ -21,7 +22,6 @@ import { Component } from "react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import CloseIcon from "@mui/icons-material/Close";
-import { CiSearch } from "react-icons/ci";
 import Navbar from "../../components/navbar/Navbar";
 import "../../index.css";
 import {
@@ -30,7 +30,7 @@ import {
 } from "@cometchat/chat-sdk-javascript";
 import LogoutIcon from "@mui/icons-material/Logout";
 import withRouter from "../../hoc/Hoc";
-import { LoggedInUser, LeftSideUser, groupUsersList, ChatMsgsDataType } from "../../typescript/data";
+import { LoggedInUser, LeftSideUser, groupUsersList, ChatMsgsDataType, CreatedGroup } from "../../typescript/data";
 import AddIcon from '@mui/icons-material/Add';
 interface MyProps {
     navigate: (path: string) => void;
@@ -58,6 +58,7 @@ interface State {
     groupUID: string;
     groupName: string;
     checkBoxes: string[];
+    addGroupMembers: string[];
 }
 
 type EmojiEvent = {
@@ -85,6 +86,8 @@ const style = {
 
 
 class LandingPage extends Component<MyProps, State> {
+    typingRef: NodeJS.Timer | null;
+
     constructor(props: MyProps) {
         super(props);
         this.state = {
@@ -104,7 +107,10 @@ class LandingPage extends Component<MyProps, State> {
             groupUID: "",
             groupName: "",
             checkBoxes: [],
-        };
+            addGroupMembers: [],
+        },
+        this.typingRef = null;
+
     }
 
     fetchLoggedInUser = async () => {
@@ -123,6 +129,7 @@ class LandingPage extends Component<MyProps, State> {
                         status: user.getStatus(),
                         uid: user.getUid(),
                     },
+                    addGroupMembers : [...this.state.addGroupMembers, user.getUid()]
                 });
             }
         } catch (error) { }
@@ -158,14 +165,100 @@ class LandingPage extends Component<MyProps, State> {
         );
     };
 
+
+    addTypingIndicatorListener = async () => {
+        const selectedUserUid: string = this.state.selectedUserUid;
+        CometChat.addMessageListener(
+            selectedUserUid,
+            new CometChat.MessageListener({
+                onTypingStarted: (typingIndicator: CometChat.TypingIndicator) => {
+                    console.log("Typing started...", typingIndicator);
+                    const conversationsData = this.state.usersList.map(
+                        (item: any) => {
+                            if (item.uid === typingIndicator.getSender().getUid()) {
+                                return { ...item, typing: true };
+                            } else {
+                                return item;
+                            }
+                        }
+                    );
+                    if (
+                        this.state.selectedUserUid === typingIndicator.getSender().getUid()
+                    ) {
+                        this.setState((prevState) => ({
+                            selectedUser: {
+                                ...prevState.selectedUser,
+                                typing: true,
+                            },
+                        }));
+                    }
+                    this.setState({ conversations: conversationsData });
+                },
+                onTypingEnded: (typingIndicator: CometChat.TypingIndicator) => {
+                    console.log("Typing ended...", typingIndicator);
+                    const conversationData = this.state.usersList.map((item: any) => {
+                        if (item.uid === typingIndicator.getSender().getUid()) {
+                            return { ...item, typing: false };
+                        } else {
+                            return item;
+                        }
+                    });
+                    if (
+                        this.state.selectedUserUid === typingIndicator.getSender().getUid()
+                    ) {
+                        this.setState((prevState) => ({
+                            selectedUser: {
+                                ...prevState.selectedUser,
+                                typing: false,
+                            },
+                        }));
+                    }
+
+                    this.setState({ conversations: conversationData });
+                },
+            })
+        );
+    };
+
     componentDidMount() {
         this.fetchLoggedInUser();
         this.getConversations();
         this.receiveMessages();
     }
 
+
+    startTyping = () => {
+        const receiverId: string = this.state.selectedUserUid;
+        const receiverType: string = CometChat.RECEIVER_TYPE.USER;
+        const typingNotification: CometChat.TypingIndicator =
+            new CometChat.TypingIndicator(receiverId, receiverType);
+        CometChat.startTyping(typingNotification);
+    };
+
+    stopTyping = () => {
+        let receiverId: string = this.state.selectedUserUid;
+        let receiverType: string = CometChat.RECEIVER_TYPE.USER;
+        let typingNotification: CometChat.TypingIndicator =
+            new CometChat.TypingIndicator(receiverId, receiverType);
+        CometChat.endTyping(typingNotification);
+    };
+
+    typingDebounce = (dealy: number) => {
+        return () => {
+            if (this.typingRef) {
+                clearTimeout(this.typingRef);
+                this.typingRef = null;
+            }
+            this.typingRef = setTimeout(() => {
+                this.stopTyping();
+            }, dealy);
+        };
+    };
+
     onChangeMsgInputElement = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({ userEnteredMsg: event.target.value });
+        this.startTyping();
+        this.typingDebounce(1000)();
     };
 
     onChangeParticipantIdFunc = (participantId: string) => {
@@ -205,7 +298,7 @@ class LandingPage extends Component<MyProps, State> {
         console.log(receiverID);
         try {
             // let UID: string = receiverID.lastIndexOf("_") !== -1 ? receiverID.substring(receiverID.lastIndexOf("_") + 1) : receiverID
-            this.setState({ selectedUserUid: receiverID });
+            this.setState({ selectedUserUid: receiverID, isChatMobileContainerDisplayed: true });
             let limit: number = 30;
             let messagesRequest: CometChat.MessagesRequest = new CometChat.MessagesRequestBuilder()
                 .setUID(receiverID)
@@ -345,9 +438,48 @@ class LandingPage extends Component<MyProps, State> {
     handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
             this.setState({
-                checkBoxes: [...this.state.checkBoxes, event.target.value]
+                addGroupMembers: [...this.state.addGroupMembers, event.target.value]
             })
         }
+    }
+
+    displayMobileUsersOrNotFunc = (isChatDisplayed: boolean) => {
+        this.setState({ isChatMobileContainerDisplayed: isChatDisplayed });
+    }
+
+    handleCreateGroup = async () => {
+        const { groupUID, groupName, addGroupMembers } = this.state;
+        var group = new CometChat.Group(
+            groupUID,
+            groupName,
+            CometChat.GROUP_TYPE.PUBLIC,
+            ""
+        );
+        let banMembers: Array<string> = [""];
+        let members: Array<CometChat.GroupMember> = addGroupMembers.map((each) => {
+            return new CometChat.GroupMember(
+                each,
+                CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT
+            );
+        });
+        try {
+            const createdGroup = await CometChat.createGroupWithMembers(
+                group,
+                members,
+                banMembers
+            );
+            console.log("Group created successfully:", createdGroup);
+            // this.setState({usersList: [...this.state.usersList, JSON.parse(JSON.stringify(createdGroup))]})
+        } catch (error) {
+            console.log("Group creation failed with exception:", error);
+        }
+    };
+
+
+    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        this.handleCreateGroup();
+        this.closeModalFunc();
     }
 
 
@@ -355,7 +487,7 @@ class LandingPage extends Component<MyProps, State> {
         return (<>
             <Box sx={landingPageStyles.mainContainer}>
                 <Box sx={landingPageStyles.childContainer}>
-                    <Navbar />
+                    <Navbar displayMobileUsersOrNotFunc={this.displayMobileUsersOrNotFunc} isLeftArrowIconDisplayed={this.state.isChatMobileContainerDisplayed} />
                     <Box sx={landingPageStyles.rightContainer}>
                         <Box sx={landingPageStyles.rightChildContainer}>
                             <Box sx={landingPageStyles.rightNavContainer}>
@@ -388,7 +520,7 @@ class LandingPage extends Component<MyProps, State> {
                                             : { xs: "flex", lg: "flex" },
                                     }}
                                 >
-                                    <TextField
+                                    {/* <TextField
                                         placeholder="search"
                                         sx={landingPageStyles.textFieldStyle}
                                         InputProps={{
@@ -398,7 +530,7 @@ class LandingPage extends Component<MyProps, State> {
                                                 </InputAdornment>
                                             ),
                                         }}
-                                    />
+                                    /> */}
                                     <Box
                                         component="ul"
                                         sx={landingPageStyles.contactsPersonsListContainer}
@@ -598,21 +730,26 @@ class LandingPage extends Component<MyProps, State> {
             <Modal
                 open={this.state.openModal}
                 onClose={this.closeModalFunc}
-
             >
                 <Box sx={style}>
                     <Stack direction={"column"} gap={"14px"}>
                         <TextField placeholder="group UID" onChange={this.groupUIDHandler} value={this.state.groupUID} />
                         <TextField placeholder="group Name" onChange={this.groupNameHandler} value={this.state.groupName} />
                         <Stack direction={"column"} gap={"10px"}>
-                            {groupUsersList.map(eachPerson => (<FormGroup key={eachPerson.personUID}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox onChange={this.handleChange} name={eachPerson.personName} value={eachPerson.personUID} />
-                                    }
-                                    label={eachPerson.personName}
-                                />
-                            </FormGroup>))}
+                            <Box component={"form"} onSubmit={this.handleSubmit}>
+                                {groupUsersList.map(eachPerson => (
+                                    <FormGroup>
+                                        <FormControlLabel
+                                            key={eachPerson.personUID}
+                                            control={
+                                                <Checkbox onChange={this.handleChange} name={eachPerson.personName} value={eachPerson.personUID} />
+                                            }
+                                            label={eachPerson.personName}
+                                        />
+                                    </FormGroup>
+                                ))}
+                                <Button type="submit" fullWidth variant="contained">Create Group</Button>
+                            </Box>
                         </Stack>
                     </Stack>
                 </Box>

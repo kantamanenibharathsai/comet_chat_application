@@ -12,13 +12,18 @@ import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 interface IState {
     isDrawerOpened: boolean
 }
 
-const Navbar = () => {
+interface IProps {
+    displayMobileUsersOrNotFunc : (isChatDisplayed : boolean) => void;
+    isLeftArrowIconDisplayed: boolean;
+}
+
+const Navbar: React.FC<IProps> = ({ displayMobileUsersOrNotFunc, isLeftArrowIconDisplayed }) => {
     const [isDrawerOpened, setIsDrawerOpened] = useState<IState["isDrawerOpened"]>(false);
 
     const drawerRef = useRef<HTMLDivElement>(null);
@@ -43,12 +48,18 @@ const Navbar = () => {
         setIsDrawerOpened(false)
     }
 
+
+    const handleLeftArrowIcon = () => {
+        displayMobileUsersOrNotFunc(false);
+    }
+
     return (
         <>
             <Box sx={navbarStyles.navbarContainer}>
                 <Box sx={navbarStyles.navbarChildContainer}>
-                    <IconButton disableFocusRipple disableRipple disableTouchRipple onClick={handleOpenDrawer}>
-                        <MenuOutlinedIcon sx={navbarStyles.menuIcon} />
+                    <IconButton disableFocusRipple disableRipple disableTouchRipple onClick={handleLeftArrowIcon}>
+                        {/* <MenuOutlinedIcon sx={navbarStyles.menuIcon} /> */}
+                        {isLeftArrowIconDisplayed && <KeyboardArrowLeftIcon sx={navbarStyles.menuIcon}/>}
                     </IconButton>
                     <Typography sx={navbarStyles.chatText}>Chat</Typography>
                     <Avatar alt="user-profile-image" src="/static/images/avatar/3.jpg" sx={navbarStyles.userProfileImage} />

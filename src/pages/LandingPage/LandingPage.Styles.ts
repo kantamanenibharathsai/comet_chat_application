@@ -99,13 +99,14 @@ const landingPageStyles = {
   },
 
   rightContainer: {
-    width: { xs: "90%", sm: "90%", md: "90%", lg: "76%", xl: "84%" },
+    width: { xs: "98%", sm: "95%", md: "95%", lg: "95%", xl: "84%" },
     background: "#F7F8FC",
     height: { xs: "calc(100vh - 76px)", lg: "100%" },
     display: { xs: "block", lg: "flex" },
     flexDirection: "column",
     justifyContent: "flex-start",
     margin: "auto",
+    // border: "4px solid red"
   },
 
   rightChildContainer: {
@@ -113,7 +114,7 @@ const landingPageStyles = {
     flexDirection: "column",
     justifyContent: "flex-end",
     margin: "auto",
-    width: { lg: "93%" },
+    width: {xs: "100%", xl: "93%" },
     height: "inherit",
     gap: { lg: "20px", xl: "40px" },
   },
@@ -124,6 +125,7 @@ const landingPageStyles = {
     justifyContent: "space-between",
     pl: "10px",
     mt: { lg: "20px", xl: 0 },
+    // border: "4px solid blue"
   },
 
   profileIconContainer: {
@@ -194,6 +196,7 @@ const landingPageStyles = {
   rightBodyContainer: {
     height: { lg: "90vh", xl: "85vh" },
     display: "flex",
+    // border: "8px solid pink"
   },
 
   leftSearchContactsContainer: {
@@ -204,6 +207,7 @@ const landingPageStyles = {
     px: { xs: "10px", sm: "15px" },
     mt: { xs: "70px", lg: "0px" },
     height: { xs: "90vh", lg: "inherit" },
+    // border: "3px solid green"
   },
 
   textFieldStyle: {
@@ -264,7 +268,7 @@ const landingPageStyles = {
     flexDirection: "column",
     position: "relative",
     height: { xs: "90vh", lg: "auto" },
-    mt: { xs: "70px", lg: "0px" },
+    mt: { xs: "0px", xl: "0px" },
   },
 
   loggedInUserContainer: {
