@@ -114,7 +114,7 @@ const landingPageStyles = {
     flexDirection: "column",
     justifyContent: "flex-end",
     margin: "auto",
-    width: {xs: "100%", xl: "93%" },
+    width: { xs: "100%", xl: "93%" },
     height: "inherit",
     gap: { lg: "20px", xl: "40px" },
   },
@@ -196,7 +196,7 @@ const landingPageStyles = {
   rightBodyContainer: {
     height: { lg: "90vh", xl: "85vh" },
     display: "flex",
-    // border: "8px solid pink"
+   // border: "8px solid pink"
   },
 
   leftSearchContactsContainer: {
@@ -327,17 +327,32 @@ const landingPageStyles = {
     gap: { lg: "10px" },
   },
 
+  noChatMsg: {
+    color: "#000",
+    fontSize: "19px",
+    fontWeight: "900",
+    lineHeight: "20px",
+    fontFamily: "Poppins",
+  },
+
   chartContainer: {
     listStyleType: "none",
     padding: 0,
     margin: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: { xs: "40px", lg: "25px", xl: "35px" },
+    // display: "flex",
+    // flexDirection: "column",
+    // gap: { xs: "40px", lg: "25px", xl: "35px" },
     overflowY: "auto",
     height: { xs: "500px", lg: "300px", xl: "200px" },
     flexGrow: 1,
     py: "30px",
+  },
+
+  chartMsgsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: { xs: "40px", lg: "25px", xl: "35px" },
+    listStyleType: "none",
   },
 
   chartMsgSendListItem: {
@@ -347,11 +362,14 @@ const landingPageStyles = {
     fontSize: "12px",
     color: "#ffffff",
     fontWeight: "300",
-    width: "50%",
+    width: "45%",
+    maxWidth: "300px",
+    overflowY: "auto",
     borderRadius: "14px",
     borderBottomRightRadius: "0px",
     lineHeight: "20px",
     // alignSelf: "flex-end",
+    mt: 3,
   },
 
   sendMessage: {
@@ -377,11 +395,12 @@ const landingPageStyles = {
     fontSize: "14px",
     color: "black",
     fontWeight: "300",
-    width: "50%",
+    maxWidth: "45%",
+    overflow: "auto",
     borderRadius: "14px",
     borderBottomLeftRadius: "0px",
     lineHeight: "20px",
-    alignSelf: "flex-start",
+    mt: 3,
   },
 
   textFieldImageContainer: {

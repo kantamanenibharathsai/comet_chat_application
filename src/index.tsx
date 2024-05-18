@@ -9,9 +9,8 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
+
 );
 
 let appID: string = "25709324ddf07c22",
